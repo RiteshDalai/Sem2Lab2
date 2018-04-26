@@ -1,214 +1,176 @@
 #include<iostream>
 using namespace std;
-class node
+struct node
 {
-	public:
 	int data;
-	node* next;
-		node(int a)
-		{
-			data = a;
-			next =NULL;
-		}
-		
+	node * next;
+	public:node()
+	{
+		data=0;
+		next=NULL;
+	}
 };
 
-class list
+struct linked
 {
-	node* head = NULL, *tail = NULL;
-	public:
-		void insert(int a)
+	node*head ; node*tail;
+	public:linked()
+	{
+		head=NULL;tail=NULL;
+	}
+	
+	void insert(int x)
+	{
+		node*temp=new node();
+		temp->data=x;
+		if(head==NULL)
 		{
-			node*temp = new node(a);
-			if(head == NULL)
-			{
-				head = temp;
-				tail = temp;
-			}else
-			{
-				tail->next = temp;
-				tail = temp;
-			}
-			temp = NULL;
+			head=temp;tail=temp;
 		}
-		
-		void InsertAt(int a, int pos)
+		else
 		{
-			node* temp = new node(a);
-			int counter,flag = 0;
-			node* slider = head;
-			if(pos == 1)
+			tail->next=temp;
+			tail=temp;
+		}
+		temp->next=NULL;
+	}
+	
+	void insertAt(int x, int p)
+	{
+		node*temp=new node();
+		int i=0;
+		node*slider=head;
+		temp->data=x;
+		if((p==1)&&(head!=NULL))
+		{
+			temp->next=head;
+			head=temp;
+		}
+		else if((p>1)&&(slider!=NULL))
+		{
+			for(i=1;i<p;i++)
 			{
-				temp->next = slider;
-				head = temp;
-				flag = 1;													
-			}else{	
-				for(counter = 1; counter < pos||slider != NULL; counter++)
+				if(i+1==p)
 				{
-					if(counter + 1 == pos)
+					temp->next = slider->next;
+					slider->next = temp;
+					if(slider->next==NULL)
 					{
-						temp -> next = slider -> next;
-						slider -> next = temp;
-						if(slider->next == NULL)
-						{
-							tail = temp;
-						}
-						flag = 1;
-						break;
+						tail=temp;
 					}
-					slider = slider->next;
+					break;
 				}
-			}
-			if(flag == 0)
-			{
-				cout<<"\nlist is not big enough \n";
+				slider=slider->next;
 			}
 		}
-		
-		void Delete()
+		else
 		{
-			node* slider = head;
-			if(head == tail)
-			{
-				head = NULL;
-				tail = NULL;
-				delete slider;
-			}else{
-				while(slider ->next != tail)
-				{
-					slider = slider->next;
-				}
-				tail = slider;
-				slider = slider->next;
-				tail->next = NULL;
-				delete slider; 
-			}
+			cout<<"Invalid input of position OR the linked list is not created \n";
 		}
-		
-		void deleteAt(int pos)
+	}
+	
+	void delete_tail()
+	{
+		node*slider=head;
+		if(head==tail)
 		{
-			int counter,flag = 0;
-			node* slider = head,*temp;
-			if(pos == 1)
+			head=NULL;tail=NULL;
+			delete slider;
+		}
+		else
+		{
+			while(slider->next !=NULL)
 			{
-				head = slider->next;
+				slider=slider->next;
+			}
+			slider->next=NULL;
+			tail=slider;
+		}
+	}
+	
+	void deleteAt(int p)
+	{
+		node*pre;node*slider;int i=0;
+		pre=head;
+		slider=head;
+		if(head==tail)
+		{
+			if(p==1)
+			{
+				head=tail=NULL;
+				delete pre;
 				delete slider;
-				flag = 1;						
 			}
 			else
-			{	
-				for(counter = 1; counter < pos||slider != NULL; counter++)
+			{
+				cout<<"Invalid position input"<<endl;
+			}
+		}
+		else
+		{
+			if((p>1)&&(head!=NULL))
+			{
+				for(i=1;i<p;i++)
 				{
-					if(counter + 1 == pos)
+					if(i+1==p)
 					{
-						temp = slider -> next;
-						slider -> next = temp->next;
-						delete temp;
-						if(slider->next == NULL)
-						{
-							tail = slider;
-						}
-						flag = 1;
+						slider=slider->next->next;
+						pre->next=slider;
 						break;
 					}
-					slider = slider->next;
+					slider=slider->next;
+					pre=pre->next;
 				}
 			}
-			if(flag == 0)
+			else
 			{
-				cout<<"\nlist is not big enough \n";
+				cout<<"Invalid input OR linked list isn't created"<<endl;
 			}
 		}
-		
-		int countItems()
+	}
+	
+	int countnodes()
+	{
+		node*slider=head;
+		int i=1;
+		while(slider->next!=NULL)
 		{
-			int counter;
-			node*slider = head;
-			for(counter = 0; slider != NULL; counter ++)
-			{
-				slider = slider->next;
-			}
-			return counter;
+			++i;
+			slider=slider->next;
 		}
-		
-		void display()
+		cout<<"Number of elements:- ";
+		return i;
+	}
+	
+	void display()
+	{
+		node*slider=head;
+		cout<<"The linked list is:-\n";
+		while(slider->next!=NULL)
 		{
-			node*slider = head;
-			for(; slider != NULL;)
-			{
-				cout<<slider->data<<" -> ";
-				slider = slider->next;
-			}
-			cout<<"NULL";
+			cout<<slider->data<<"  ";
+			slider=slider->next;
 		}
+		cout<<slider->data<<"  NULL"<<endl;
+	}
 };
 
 int main()
 {
-	int data,pos,choice,flag = 0;
-	list list1;
-	do
+	linked list;
+	int a,d,l;
+	cout<<"Enter the length of linked list\n";
+	cin>>l;
+	cout<<"\nEnter the elemnets of the linked list\n";
+	for(a=1;a<=l;a++)
 	{
-		system("cls");
-		cout<<"welcome to your linked list suite\n";
-		cout<<"\n what do you want to do??\n";
-		cout<<"1. insert node at last\n";
-		cout<<"2. insert a node at a position\n";
-		cout<<"3. delete a node at the end\n";
-		cout<<"4. delete a node at a position\n";
-		cout<<"5. count nodes\n";
-		cout<<"6. display list\n";
-		cout<<"7. exit\n";
-		cin>>choice;
-		switch(choice)
-		{
-			case 1:{
-				cout<<"\nenter data for node\n";
-				cin>>data;
-				list1.insert(data);
-				break;
-			}
-			case 2:{
-				cout<<"\nenter data for node\n";
-				cin>>data;
-				cout<<"\nenter position\n";
-				cin>>pos;
-				list1.InsertAt(data,pos);
-				break;
-			}
-			case 3:{
-				cout<<"\ndeleting node...";
-				list1.Delete();
-				cout<<"\nnode deleted";
-				break;
-			}
-			case 4:{
-				cout<<"\nenter position\n";
-				cin>>pos;
-				list1.deleteAt(pos);
-				cout<<"\nnode deleted\n";
-				break;
-			}
-			case 5:{
-				cout<<"\nnumber of nodes is"<<list1.countItems();
-				cout<<"\n";
-				break;
-			}
-			case 6:{
-				cout<<"\n";
-				list1.display();
-				break;
-			}
-			case 7:{
-				flag =1;
-				break;
-			}
-			default:{
-				cout<<"wrong input\n";
-				break;
-			}
-		}
-		cout<<"\n";
-		system("pause");
-	}while(flag == 0);
+		cin>>d;
+		list.insert(d);
+	}
+	cout<<endl;
+	list.display();
+	list.insertAt(19,4);cout<<endl;list.display();
+	list.delete_tail();cout<<endl;list.display();
+	list.deleteAt(4);cout<<endl;list.display();
+	cout<<list.countnodes()<<endl;
 }
